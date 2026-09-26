@@ -2,6 +2,16 @@ const r = require("raylib");
 
 const scanner = require('./scanner');
 
+function doFieldsOverlap(f1_start, f1_end, f2_start, f2_end) {
+  if (f2_start <= f1_start <= f2_end) {
+    return true;
+  }
+  if (f2_start >= f1_end >= f2_end) {
+    return true;
+  }
+  return false;
+}
+
 function running() {
   return !r.WindowShouldClose();
 }
@@ -17,16 +27,19 @@ function setup() {
 }
 
 function update() {
-  const end = WIDTH - recW;
+  const scanEnd = WIDTH - recW;
 
-  curSign = curSign * scanner.direction(x, 0, end);
-  x = x + curSign;
+  curSign = curSign * scanner.direction(scanStart, 0, scanEnd);
+  scanStart = scanStart + curSign;
+
+  color = doFieldsOverlap(scanStart, scanEnd, fieldStart, fieldEnd) ? r.RED : r.WHITE;
 }
 
 const recW = 50;
-let x = 0;
+let scanStart = 0;
 let curSign = -1;
 
+let color = r.WHITE;
 function draw() {
 
   const fieldStart = 100;
@@ -36,8 +49,8 @@ function draw() {
   r.BeginDrawing();
   r.ClearBackground(r.BLACK);
 
-  r.DrawRectangle(fieldStart, 0, fieldW, HEIGHT, r.BLUE);
-  r.DrawRectangle(x, 0, recW, HEIGHT, r.WHITE);
+  r.DrawRectangle(fieldStart, 0, fieldW, HEIGHT, r.BLUE); //Field
+  r.DrawRectangle(scanStart, 0, recW, HEIGHT, color); //Scanner
 
   r.EndDrawing();
 }
