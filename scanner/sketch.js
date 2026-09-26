@@ -28,9 +28,17 @@ let x = 0;
 let curSign = -1;
 
 function draw() {
+
+  const fieldStart = 100;
+  const fieldEnd = 150;
+  const fieldW = fieldEnd - fieldStart;
+
   r.BeginDrawing();
   r.ClearBackground(r.BLACK);
-  r.DrawRectangle(x, 0, recW, HEIGHT, r.WHITE)
+
+  r.DrawRectangle(fieldStart, 0, fieldW, HEIGHT, r.BLUE);
+  r.DrawRectangle(x, 0, recW, HEIGHT, r.WHITE);
+
   r.EndDrawing();
 }
 
