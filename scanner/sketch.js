@@ -9,9 +9,10 @@ function isDetected(scanEnd) {
   return (scanner.doFieldsOverlap(f2_start, f2_end, scanStart, scanEnd));
 }
 
+const speed = 5;
 function move(end) {
   curSign = curSign * scanner.direction(scanStart, 0, end);
-  scanStart = scanStart + curSign;
+  scanStart = (scanStart + curSign) * speed;
 }
 
 function running() {
