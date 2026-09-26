@@ -17,11 +17,9 @@ speed2 = -speed2;
 
 const f1_start = 100;
 const f1_end = 200;
-const f1_width = f1_end - f1_start;
 
 const f2_start = 400;
 const f2_end = 410;
-const f2_width = f2_end - f2_start;
 
 let s1_color = r.WHITE;
 let s2_color = r.WHITE;
@@ -39,6 +37,9 @@ function drawScanners() {
 }
 
 function drawFields() {
+  const f1_width = f1_end - f1_start;
+  const f2_width = f2_end - f2_start;
+
   r.DrawRectangle(f1_start, 0, f1_width, HEIGHT, r.BLUE); //Field1
   r.DrawRectangle(f2_start, 0, f2_width, HEIGHT, r.BLUE); //Field2
 }
@@ -72,8 +73,6 @@ function update() {
   const s2_end = s2_start + s2_width;
   s2_color = isDetected(s2_start, s2_end) ? r.RED : r.WHITE;
 }
-
-
 
 function draw() {
   r.BeginDrawing();
