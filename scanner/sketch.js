@@ -32,7 +32,7 @@ const hF2_end = 410;
 let hS1_color = r.WHITE;
 let hS2_color = r.WHITE;
 let vS1_color = r.WHITE;
-
+const fieldColor = r.BLUE;
 function drawHorizScanners() {
   r.DrawRectangle(hS1_start, 0, hS1_width, HEIGHT, hS1_color); //Scanner1
   r.DrawRectangle(hS2_start, 0, hS2_width, HEIGHT, hS2_color); //Scanner2
@@ -42,8 +42,8 @@ function drawHorizFields() {
   const hF1_width = hF1_end - hF1_start;
   const hF2_width = hF2_end - hF2_start;
 
-  r.DrawRectangle(hF1_start, 0, hF1_width, HEIGHT, r.BLUE); //Field1
-  r.DrawRectangle(hF2_start, 0, hF2_width, HEIGHT, r.BLUE); //Field2
+  r.DrawRectangle(hF1_start, 0, hF1_width, HEIGHT, fieldColor); //Field1
+  r.DrawRectangle(hF2_start, 0, hF2_width, HEIGHT, fieldColor); //Field2
 }
 
 function horizDetector(scanStart, scanEnd) {
@@ -60,7 +60,7 @@ function drawVertScanners() {
 function drawVertFields() {
   const vF1_height = vF1_end - vF1_start;
 
-  r.DrawRectangle(0, vF1_start, WIDTH, vF1_height, r.BLUE)
+  r.DrawRectangle(0, vF1_start, WIDTH, vF1_height, fieldColor)
 }
 
 function vertDetector(scanStart, scanEnd) {
