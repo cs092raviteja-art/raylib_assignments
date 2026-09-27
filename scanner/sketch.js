@@ -2,46 +2,69 @@ const r = require("raylib");
 
 const scanner = require('./scanner');
 
-const WIDTH = 500;
-const HEIGHT = 500;
+const WIDTH = 600;
+const HEIGHT = 400;
 
-const s1_width = 50;
-let s1_start = 0;
-let speed1 = 1;
-speed1 = -speed1;
+const hS1_width = 50;
+let hS1_start = 0;
+let hS1_speed = 1;
+hS1_speed = -hS1_speed;
 
-const s2_width = 50;
-let s2_start = WIDTH / 2;
-let speed2 = 3;
-speed2 = -speed2;
+const hS2_width = 50;
+let hS2_start = WIDTH / 2;
+let hS2_speed = 2;
+hS2_speed = -hS2_speed;
 
-const f1_start = 100;
-const f1_end = 200;
+const vS1_height = 20;
+let vS1_start = 0;
+let vS1_speed = 2;
+vS1_speed = -vS1_speed
 
-const f2_start = 400;
-const f2_end = 410;
+const vF1_start = 200;
+const vF1_end = 250;
 
-let s1_color = r.WHITE;
-let s2_color = r.WHITE;
+const hF1_start = 100;
+const hF1_end = 201;
 
-function isDetected(scanStart, scanEnd) {
-  if (scanner.doFieldsOverlap(f1_start, f1_end, scanStart, scanEnd)) {
+const hF2_start = 400;
+const hF2_end = 410;
+
+let hS1_color = r.WHITE;
+let hS2_color = r.WHITE;
+let vS1_color = r.WHITE;
+
+function drawHorizScanners() {
+  r.DrawRectangle(hS1_start, 0, hS1_width, HEIGHT, hS1_color); //Scanner1
+  r.DrawRectangle(hS2_start, 0, hS2_width, HEIGHT, hS2_color); //Scanner2
+}
+
+function drawHorizFields() {
+  const hF1_width = hF1_end - hF1_start;
+  const hF2_width = hF2_end - hF2_start;
+
+  r.DrawRectangle(hF1_start, 0, hF1_width, HEIGHT, r.BLUE); //Field1
+  r.DrawRectangle(hF2_start, 0, hF2_width, HEIGHT, r.BLUE); //Field2
+}
+
+function horizDetector(scanStart, scanEnd) {
+  if (scanner.doFieldsOverlap(hF1_start, hF1_end, scanStart, scanEnd)) {
     return true;
   }
-  return (scanner.doFieldsOverlap(f2_start, f2_end, scanStart, scanEnd));
+  return (scanner.doFieldsOverlap(hF2_start, hF2_end, scanStart, scanEnd));
 }
 
-function drawScanners() {
-  r.DrawRectangle(s1_start, 0, s1_width, HEIGHT, s1_color); //Scanner1
-  r.DrawRectangle(s2_start, 0, s2_width, HEIGHT, s2_color); //Scanner2
+function drawVertScanners() {
+  r.DrawRectangle(0, vS1_start, WIDTH, vS1_height, vS1_color)
 }
 
-function drawFields() {
-  const f1_width = f1_end - f1_start;
-  const f2_width = f2_end - f2_start;
+function drawVertFields() {
+  const vF1_height = vF1_end - vF1_start;
 
-  r.DrawRectangle(f1_start, 0, f1_width, HEIGHT, r.BLUE); //Field1
-  r.DrawRectangle(f2_start, 0, f2_width, HEIGHT, r.BLUE); //Field2
+  r.DrawRectangle(0, vF1_start, WIDTH, vF1_height, r.BLUE)
+}
+
+function vertDetector(scanStart, scanEnd) {
+  return (scanner.doFieldsOverlap(scanStart, scanEnd, vF1_start, vF1_end));
 }
 
 
@@ -58,33 +81,47 @@ function setup() {
 }
 
 function update() {
-  const leftEnd = ((WIDTH / 2) - (WIDTH / 2) % speed1) - s1_width;
-  const rightEnd = (WIDTH - (WIDTH % speed2)) - s2_width;
+  const leftEnd = scanner.calcEnd(WIDTH / 2, 0, hS1_width, hS1_speed);
+  const rightEnd = scanner.calcEnd(WIDTH, WIDTH / 2, hS2_width, hS2_speed);
 
-  //Decides if scanner needs to move right or left and, scanner's speed.
-  speed1 = scanner.changeSign(s1_start, 0, leftEnd, speed1);
-  speed2 = scanner.changeSign(s2_start, (WIDTH / 2), rightEnd, speed2);
+  const vEnd = scanner.calcEnd(HEIGHT, 0, vS1_height, vS1_speed);
+
+
+  //Decides if scanner needs to move (right or left) and (up or down), and scanner's speed.
+  hS1_speed = scanner.changeSign(hS1_start, 0, leftEnd, hS1_speed);
+  hS2_speed = scanner.changeSign(hS2_start, (WIDTH / 2), rightEnd, hS2_speed);
+
+  vS1_speed = scanner.changeSign(vS1_start, 0, vEnd, vS1_speed)
+
 
   //Moves scanner according speed and direction.
   //Direction is included in speed with '+' and '-'.
-  s1_start += speed1;
-  s2_start += speed2;
+  hS1_start += hS1_speed;
+  hS2_start += hS2_speed;
 
-  //Detects the fields of First scanner.
-  const s1_end = s1_start + s1_width;
-  s1_color = isDetected(s1_start, s1_end) ? r.RED : r.WHITE;
+  vS1_start += vS1_speed;
 
-  //Detects the fields of Second scanner.
-  const s2_end = s2_start + s2_width;
-  s2_color = isDetected(s2_start, s2_end) ? r.RED : r.WHITE;
+
+  //Detects the fields of scanners.
+  const hS1_end = hS1_start + hS1_width;
+  hS1_color = horizDetector(hS1_start, hS1_end) ? r.RED : r.WHITE;
+  const hS2_end = hS2_start + hS2_width;
+  hS2_color = horizDetector(hS2_start, hS2_end) ? r.RED : r.WHITE;
+
+  const vS1_end = vS1_start + vS1_height;
+  vS1_color = vertDetector(vS1_start, vS1_end) ? r.RED : r.WHITE;
+
 }
 
 function draw() {
   r.BeginDrawing();
   r.ClearBackground(r.BLACK);
 
-  drawFields();
-  drawScanners();
+  drawHorizFields();
+  drawVertFields();
+
+  drawHorizScanners();
+  drawVertScanners();
 
   r.EndDrawing();
 }
