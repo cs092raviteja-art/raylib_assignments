@@ -61,15 +61,20 @@ function update() {
   const leftEnd = ((WIDTH / 2) - (WIDTH / 2) % speed1) - s1_width;
   const rightEnd = (WIDTH - (WIDTH % speed2)) - s2_width;
 
+  //Decides if scanner needs to move right or left and, scanner's speed.
   speed1 = scanner.changeSign(s1_start, 0, leftEnd, speed1);
   speed2 = scanner.changeSign(s2_start, (WIDTH / 2), rightEnd, speed2);
 
+  //Moves scanner according speed and direction.
+  //Direction is included in speed with '+' and '-'.
   s1_start += speed1;
   s2_start += speed2;
 
+  //Detects the fields of First scanner.
   const s1_end = s1_start + s1_width;
   s1_color = isDetected(s1_start, s1_end) ? r.RED : r.WHITE;
 
+  //Detects the fields of Second scanner.
   const s2_end = s2_start + s2_width;
   s2_color = isDetected(s2_start, s2_end) ? r.RED : r.WHITE;
 }
